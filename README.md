@@ -135,7 +135,7 @@ yarn init -y
   推荐大家读一些restful设计规范的书，延伸阅读: [RESTful API 最佳实践](http://www.ruanyifeng.com/blog/2018/10/restful-api-best-practices.html)
   网上的一些速成教程太零散，如果有时间还是需要系统的学习，推荐[RESTful API实用指南](https://item.jd.com/26850610638.html)等。
 
-  在前端的开发中，我们要接触各种各样的接口，接口的格式根据开发人员，项目的变化而多种多样。
+  在前端的开发中，我们要接触各种各样的接口，接口的格式根据开发人员习惯不同而有多种多样的风格。
   例如以下几种接口:
   ```text
   /ciPriceCreateRule
@@ -146,15 +146,15 @@ yarn init -y
   例如以下几种接口数据格式:
   ```javascript
   { code: 200, data: {...}, message: '...' }
-  { code: '200', data: {...}, msg: '...' }
-  { code: 'success', data: { entities: [...], page: 1, entityCount: 10 } }
+  { ok: true, data: {...}, msg: '...' }
+  { status: 'success', data: { entities: [...], page: 1, entityCount: 10 } }
   ```
 
   由于这种不统一性，前端人员需要在项目中到处写判断
   ```javascript
   fetchRecord () {
     ajax.get('/xxx').then(res => {
-      if (res.code === 'success') {
+      if (res.status === 'success') {
         this.record = res.data
       }
     })
@@ -165,8 +165,8 @@ yarn init -y
   ```
   大量重复代码，命名混乱没有成就感😓，而且如果接口有变化，需要改很多地方。
 
-  庆幸的是，大多数项目，在本项目范围中，后端的接口规则还可以做到统一。
-  因此我们可以做到，将混乱在我们自己的手中终结。
+  庆幸的是，大多数项目在该项目范围内，接口规则还可以做到统一。
+  因此前端人员可以做到，将混乱在我们自己的手中终结。
 
   我们要做的，首先是去除接口在各处的硬编码。
   将各种接口在项目中以实际业务含义命名，例如:
@@ -186,7 +186,7 @@ yarn init -y
     get(...args) {
       return fxios.get(...args).then(res => {
         // 在此处使用数据请求成功判断
-        if (code === 'success') {
+        if (res.status === 'success') {
           return res.data
         }
         throw new Error(res.message)
@@ -311,8 +311,8 @@ yarn init -y
   module.exports = { extends: ['@commitlint/config-conventional'] }
   ```
 
-  * 工具husky/[yorkie](https://www.npmjs.com/package/yorkie)，将commitlint绑定到git的commit-msg提交钩子上，在每次生成提交前调用commitlint检测提交文字格式，不通过验证则无法生成提交。
-  此处我使用yorkie作为例子
+  * 工具husky/[yorkie](https://www.npmjs.com/package/yorkie)，将`commitlint`绑定到`git`的`commit-msg`提交钩子上，在每次生成提交前调用`commitlint`检测提交文字格式，不通过验证则无法生成提交。
+  此处我使用`yorkie`作为例子
   安装：
   ```
   yarn add yorkie
@@ -326,9 +326,9 @@ yarn init -y
   }
   ```
 
-    * git hooks分为服务器hook和本地hook，此处讲的全部都是本地hook。
-    * 详细的hooks说明需要看官方文档，想不起来的时候，可以快速看一下当前项目里的`.git/hooks`文件夹，里面的文件就是当前本地git支持的hook，这些文件都是见名知意的。
-    * 用相同的思路，还可以在其他的git hooks中注入回调命令，例如pre-commit/pre-push自动运行测试，不通过则阻止提交/推送。
+    1. git hooks分为服务器hook和本地hook，此处讲的全部都是本地hook。
+    2. 详细的hooks说明需要看官方文档，想不起来的时候，可以快速看一下当前项目里的`.git/hooks`文件夹，里面的文件就是当前本地git支持的hook，这些文件都是见名知意的。
+    3. 用相同的思路，还可以在其他的git hooks中注入回调命令，例如pre-commit/pre-push自动运行测试，不通过则阻止提交/推送。
 
   * 工具[commitizen](https://www.npmjs.com/package/commitizen) 一个命令行下，用交互的方式生成合规的提交格式的工具，对于还不熟悉提交消息格式的人起到自动生成合规消息的作用，可有可无。
   安装过程
@@ -396,7 +396,7 @@ yarn init -y
 		hotfix完成后会自动合并到develop和master
 
   可结合示例图理解流程，看不懂要多看两遍，并且相信自己一定能看懂🙏。
-  ![flow](//github.com/rmbf2e/frondend-git/raw/master/git-model@2x.png)
+  ![flow](/rmbf2e/frondend-git/blob/master/git-model@2x.png?raw=true)
   图片来自gitflow的推荐教程文档[https://nvie.com/posts/a-successful-git-branching-model/]
 
   * 按照[安装教程](https://github.com/nvie/gitflow/wiki/Installation)安装完毕后，即可在命令行中使用`git flow`相关命令
@@ -452,15 +452,17 @@ yarn init -y
   git commit
   ```
   撤销前三次操作，重新生成一次提交
-  __IMPORTANT__🈲：该操作只能在没有`git push`到服务器之前进行，如果已经`push`了，那就保持这个提交记录，千万不要用`--force`💢，会可能覆盖其他人的工作。除非你可以确保`push`的分支，是仅仅为了保存代码的私有分支，别人肯定不会`pull`，才可以在使用`--force`参数。
-  __SUMMARY__：鼓励经常`commit`，确保一个`feature`或`bugfix`完整之后再push到服务端。
+  🈲：该操作只能在没有`git push`到服务器之前进行，如果已经`push`了，那就保持这个提交记录，千万不要用`--force`，会可能覆盖其他人的工作。除非你可以确保`push`的分支是私有分支，别人肯定不会`pull`，才可以在使用`--force`参数。
+	![shoot](/rmbf2e/frondend-git/blob/master/push2shoot.png?raw=true)
 
-  * git flow bugfix与feature使用完全相同。
+  🍻总结: 鼓励经常`commit`，确保一个`feature`或`bugfix`完整之后再push到服务端。
+
+  * `git flow bugfix`与`feature`使用完全相同。
 
 
-  * git flow release
-    运行git flow release start 1.0.0，进入发布1.0.0版本状态，gitflow会自动创建release/1.0.0分支，并切换到该分支。
-    运行git flow release finish 1.0.0，自动将1.0.0添加到git的tag，添加一个版本标签，并自动将release/1.0.0分支合并到master与develop分支，
+  * `git flow release`
+    运行`git flow release start 1.0.0`，进入发布1.0.0版本状态，gitflow会自动创建`release/1.0.0`分支，并切换到该分支。
+    运行`git flow release finish 1.0.0`，自动将1.0.0添加到git的tag，添加一个版本标签，并自动将release/1.0.0分支合并到master与develop分支，
 	  完成后自动删除release/1.0.0分支，并自动切换回develop分支。
 
     其他更多命令与流程理解，可参阅gitflow文档。
