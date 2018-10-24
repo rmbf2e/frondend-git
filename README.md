@@ -133,7 +133,7 @@ yarn init -y
   前端人员大多是被动接受后端人员设计的接口规则，或者是因为我们认为这个就是后端人员的本职工作，或者是我们在接口设计上了解不多。
   只有知道什么是好的设计，才能看出问题，进而知道如何改进。
   推荐大家读一些restful设计规范的书，延伸阅读: [RESTful API 最佳实践](http://www.ruanyifeng.com/blog/2018/10/restful-api-best-practices.html)
-  网上的一些速成教程太零散，如果有时间还是需要系统的学习，推荐[RESTful API实用指南](https://item.jd.com/26850610638.html)等。
+  网上的一些速成教程太零散，如果有时间还是需要系统的学习，推荐📖[RESTful API实用指南](https://item.jd.com/26850610638.html)等。
 
   在前端的开发中，我们要接触各种各样的接口，接口的格式根据开发人员习惯不同而有多种多样的风格。
   例如以下几种接口:
@@ -396,7 +396,7 @@ yarn init -y
 		hotfix完成后会自动合并到develop和master
 
   可结合示例图理解流程，看不懂要多看两遍，并且相信自己一定能看懂🙏。
-  ![flow](/rmbf2e/frondend-git/blob/master/git-model@2x.png?raw=true)
+  ![flow](https://raw.githubusercontent.com/rmbf2e/frondend-git/master/git-model%402x.png)
   图片来自gitflow的推荐教程文档[https://nvie.com/posts/a-successful-git-branching-model/]
 
   * 按照[安装教程](https://github.com/nvie/gitflow/wiki/Installation)安装完毕后，即可在命令行中使用`git flow`相关命令
@@ -453,9 +453,10 @@ yarn init -y
   ```
   撤销前三次操作，重新生成一次提交
   🈲：该操作只能在没有`git push`到服务器之前进行，如果已经`push`了，那就保持这个提交记录，千万不要用`--force`，会可能覆盖其他人的工作。除非你可以确保`push`的分支是私有分支，别人肯定不会`pull`，才可以在使用`--force`参数。
-	![shoot](/rmbf2e/frondend-git/blob/master/push2shoot.png?raw=true)
 
-  🍻总结: 鼓励经常`commit`，确保一个`feature`或`bugfix`完整之后再push到服务端。
+	![shoot](https://raw.githubusercontent.com/rmbf2e/frondend-git/master/push2shoot.png)
+
+  🍻总结: 鼓励经常`commit`，确保一个`feature`或`bugfix`完成之后再push到服务器。
 
   * `git flow bugfix`与`feature`使用完全相同。
 
@@ -485,10 +486,12 @@ yarn init -y
   ```
   参考https://stackoverflow.com/questions/5195859/how-to-push-a-tag-to-a-remote-repository-using-git
 
-  💡: 可以在自己的用户目录中定义很多git操作的别名简化每次命令输入，例如我使用`git ci`命令代替`git commit`。
+  💡 可以在自己的用户目录中定义很多git操作的别名简化每次命令输入，例如我使用`git ci`命令代替`git commit`。
   __IMPORTANT__：注意自己设置的别名不要覆盖已有的git子命令。
 
-  * 类似的改良流程有github-flow与gitlab-flow，参考http://www.ruanyifeng.com/blog/2015/12/git-workflow.html
+  💡 类似的改良流程有github-flow与gitlab-flow，参考http://www.ruanyifeng.com/blog/2015/12/git-workflow.html
     这两个流程没有对应的命令行工具，只是概念。
 
-  * __没有银弹__🗝: 以上只是一些业界最佳实践介绍，在结合git或不结合git的各种开发流程中，只有经过实践才能总结出适合自己团队的工作流。
+  💡__没有银弹__: 以上只是一些业界最佳实践介绍，在结合git的各种开发流程中，只有经过实践才能总结出适合自己团队的工作流。
+
+  📖: 系统学习推荐[Pro Git 2](https://legacy.gitbook.com/book/bingohuang/progit2/details)
