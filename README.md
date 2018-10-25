@@ -9,27 +9,34 @@
   nodejs是一门更新很快的语言，我们常常要维护老项目，老项目依赖某个较早的nodejs版本，随便升级会生成莫名其妙的错误。
   而nodejs的生态环境是总在不断向前推进的，很多工具，第三方包都在前进，舍弃旧环境。
   很多时候如果环境不升级，我们需要手动安装很多老版本工具，而且连文档都查阅都会混乱，我们程序员也有需要保持最新的知识栈的需求。
-  此处推荐使用编程语言版本切换工具，ruby有rvm，golang有gvm，nodejs的就是[nvm](https://github.com/creationix/nvm)，即Node Version Manager，官网有多系统安装方式。
+  此处推荐使用编程语言版本切换工具🍀，ruby有rvm，golang有gvm，nodejs的就是[nvm](https://github.com/creationix/nvm)，全称Node Version Manager，官网有多系统安装方式。
 
 安装完毕后，在命令行中使用
+
 ```bash
 nvm ls-remote
 ```
+
 查看当前可安装版本，接下来针对想要使用的版本安装即可，比如
+
 ```bash
 nvm install 10.10.0
 ```
+
 安装完毕后即可执行
+
 ```bash
 node -v // v10.10.0
 ```
 
 💡: 当同时安装多个版本之后，使用命令指定默认版本
+
 ```bash
 nvm alias default 10.10.0
 ```
 
 💡: 使用命令切换其他版本，版本号不必一字不差，命令会自动匹配版本。
+
 ```bash
 nvm use 9.8
 node -v // v9.8.0
@@ -46,24 +53,27 @@ yarn init -y
 ```
 
 💡: 在本示例项目中，全使用`yarn add ***`添加package简化操作，在实际项目中应根据第三方包的实际用途添加`-D`选项将包放到`devDependencies`中。
-💡: 在本示例中，我将`./node_modules/.bin`，添加到了环境变量`PATH`中，所以只要我项目中安装了带有命令行的工具，且处于项目目录中，即可执行相应的工具命令。
 💡: 在本示例中，统一使用`yarn`代替`npm`，具体实际操作中使用哪一个都可以，但不要混用，因为这两者生成的`node_modules`目录中的结构不同。
 
 ### 第一部分: 前端代码检查自动化
 
 很多人都知道`eslint`可以检查`javascript`代码，但知道`eslint`可以自动修正代码，以及如何在工程中使用的人不多。
 
-* 工具[eslint](https://www.npmjs.com/package/eslint)
+* 🛠 工具[eslint](https://www.npmjs.com/package/eslint)
   安装
   ```bash
   yarn add eslint
   ```
 
 * 工具规则集[eslint-config-airbnb](https://www.npmjs.com/package/eslint-config-airbnb)
+
   安装
+
   ```bash
   yarn add eslint-config-airbnb eslint-plugin-jsx-a11y eslint-plugin-react eslint-plugin-import
   ```
+  `eslit-config-airbnb`是主体规则，其他几个是被`airbnb`规则依赖的附属规则。
+
   新增文件`.eslintrc.js`
   ```javascript
   module.exports = {
@@ -74,11 +84,15 @@ yarn init -y
   ```
 
   此时在命令行应该可以执行`eslint`命令对文件进行检查了。
+  执行
+  ```javascript
+  npx eslint myjsfile.js
+  ```
 
   💡: eslint文档中的示例使用json格式的配置文件，此处使用`commonjs`规范的js模块文件。在之后的各种工具的配置文件格式，我推荐只要可以，就使用js模块，因为js模块格式可以注释，且能包含逻辑。
 
   此处使用vscode作为例子讲解与ide的结合。
-  参考(https://segmentfault.com/a/1190000009077086)
+  可参考随便搜的一些配置文章，例如🔗(https://segmentfault.com/a/1190000009077086)
   步骤：
     1. 在vscode中添加eslint插件。
     2. 在vscode的设置中开启`Auto Fix On Save`。
@@ -86,16 +100,21 @@ yarn init -y
 
   💡人类逻辑的错误不在修正之列，比如变量乱命名等。
 
-* 工具[prettier](https://www.npmjs.com/package/prettier)，顾名思义，该工具的作用是美化代码。
+  * 工具🛠 [prettier](https://www.npmjs.com/package/prettier)，顾名思义，该工具的作用是美化代码。
 
   💡`prettier`工具有自己的一套默认规则，因此不使用任何配置文件也可直接使用。如果需要可以参照文档配置`prettier`不多的几个规则。
 
-  因为之前已经有`eslint`帮忙修正代码，此处不用安装`prettier`本体，只要安装eslint与prettier的集成即可。
+  💣 如果`eslint`和`prettier`两个工具独立工作，之间的语法规则会有一些冲突，因此推荐使用`prettier`集成进`eslint`的方法。
+
+  因为之前已经有`eslint`帮忙修正代码，此处不用再单独安装`prettier`本体，只要安装eslint与prettier的集成即可。
   安装:
+
   ```bash
   yarn add eslint-config-prettier
   ```
+
   安装之后，添加`prettier`规则到eslint配置文件。
+
   ```javascript
   module.exports = {
     extends: [
@@ -104,6 +123,7 @@ yarn init -y
     ],
   }
   ```
+
   💡注意扩展配置顺序，后面的扩展规则会覆盖前面的。
 
   此时`vscode`应该已经可以自动修正并美化js文件了🎉。
@@ -125,7 +145,7 @@ yarn init -y
     🍵好吧，本着刻意练习的原则，针对每个人或者团队，步子不应一次迈的太大，如果之前没有在项目中严格使用验证规则的情况，
     可以先尝试`eslint-config-recommended`，`eslint-config-react-app`等一些较为宽松规则。
 
-
+  🎯同理，样式类检查有[stylelint](https://www.npmjs.com/package/stylelint)，可以检查css与各种`less/sass`等`css`扩展类型文件。
 
 ### 第二部分: 前端工程对接口的处理
 
@@ -137,13 +157,16 @@ yarn init -y
 
   在前端的开发中，我们要接触各种各样的接口，接口的格式根据开发人员习惯不同而有多种多样的风格。
   例如以下几种接口:
+
   ```text
   /ciPriceCreateRule
   /updateWorkerInstanceVO
   ```
+
   名称十分随意，和业务逻辑实际含义相差甚远。
 
   例如以下几种接口数据格式:
+
   ```javascript
   { code: 200, data: {...}, message: '...' }
   { ok: true, data: {...}, msg: '...' }
@@ -151,6 +174,7 @@ yarn init -y
   ```
 
   由于这种不统一性，前端人员需要在项目中到处写判断
+
   ```javascript
   fetchRecord () {
     ajax.get('/xxx').then(res => {
@@ -171,6 +195,7 @@ yarn init -y
   我们要做的，首先是去除接口在各处的硬编码。
   将各种接口在项目中以实际业务含义命名，例如:
   创建一个`api.js`文件，统一存放各个接口地址
+
   ```javascript
   export order = {
     detail: '/fetchOrderInstanceDetail',
@@ -181,6 +206,7 @@ yarn init -y
   ```
 
   然后是封装一个ajax工具，使所有请求都经过该工具的过滤，例如使用[fxios](https://github.com/superwf/fxios) (语法类似axios)，大家可以想象成axios的使用。
+
   ```javascript
   const ajax = {
     get(...args) {
@@ -197,7 +223,9 @@ yarn init -y
   }
   export default ajax
   ```
+
   在`redux/mobx/vuex`或各种其他的前端的各种数据层store中使用时:
+
   ```javascript
   import ajax from './ajax'
   import { order as api } from './api'
@@ -243,6 +271,7 @@ yarn init -y
   }
 
   // 在store中请求分页数据结构后可直接将数据赋值，不必在每个业务逻辑的store中单独处理
+
   ```javascript
   {
   ...
@@ -256,9 +285,9 @@ yarn init -y
   <Table { ...store.order.list } />
   ```
 
-  总结: 将系统的混乱尽量在自己这一层终结，这种思路主要是，将依赖外部环境的操作，通过一个单点(应考虑单例模式)操作工具老进行统一的过滤和加工。
+  总结: 将系统的混乱尽量在自己这一层终结，这种思路主要是，将依赖外部环境的操作，通过一个单点(应考虑单例模式)操作工具老进行统一的过滤和加工。形象一些说，将系统控制为一个漏斗，将各种数据在漏斗的末端进行统一处理。
   在之后的层中直接拿到工整的数据结构。
-  在后端系统的开发中，也会遇到需要使用的外部接口，数据库设计混乱的情况，也可参考这种思路处理。
+  在后端系统的开发中，也会遇到需要使用的外部接口，数据库设计混乱的情况，也可参考这种思路处理，尽量做到“混乱，在我手中终结”。
 
 ### 第三部分: 启用严格检查的提交格式
 
@@ -287,19 +316,21 @@ yarn init -y
     test: 测试
     revert: 由于上面的某个错误提交，生成恢复代码的一次提交
     chore: 不包含在上面选项中的其他情况
-    参考(http://www.ruanyifeng.com/blog/2016/01/commit_message_change_log.html)
+    参考🔗(http://www.ruanyifeng.com/blog/2016/01/commit_message_change_log.html)
     注：不同的lint规则，可选的type可能稍有不同，比如较严格的规则不允许chore这种范围太宽泛的选项。
 
   * 安装工具之前需要初始化nodejs项目环境，运行：
-  ```
+
+  ```bash
   yarn init
   ```
   
-  * 工具[commintlint](https://www.npmjs.com/package/commitlint) 检测每次提交的格式核心代码。
-  * 工具[commintlint-cli](https://www.npmjs.com/package/@commitlint/prompt-cli) commintlint的命令行工具。
+  * 🛠 工具[commintlint](https://www.npmjs.com/package/commitlint) 检测每次提交的格式核心代码。
+  * 🛠  工具[commintlint-cli](https://www.npmjs.com/package/@commitlint/prompt-cli) commintlint的命令行工具。
 
   按照文档，安装工具：
-  ```
+
+  ```bash
   yarn add commitlint @commitlint/prompt-cli
   ```
   
@@ -311,10 +342,11 @@ yarn init -y
   module.exports = { extends: ['@commitlint/config-conventional'] }
   ```
 
-  * 工具husky/[yorkie](https://www.npmjs.com/package/yorkie)，将`commitlint`绑定到`git`的`commit-msg`提交钩子上，在每次生成提交前调用`commitlint`检测提交文字格式，不通过验证则无法生成提交。
+  * 🛠 工具husky/[yorkie](https://www.npmjs.com/package/yorkie)，将`commitlint`绑定到`git`的`commit-msg`提交钩子上，在每次生成提交前调用`commitlint`检测提交文字格式，不通过验证则无法生成提交。
   此处我使用`yorkie`作为例子
   安装：
-  ```
+
+  ```bash
   yarn add yorkie
   ```
 
@@ -346,17 +378,17 @@ yarn init -y
   * 工具[conventional-changelog-cli](https://www.npmjs.com/package/conventional-changelog-cli)，自动提取提交记录，根据当前package.json中的version版本号，生成当前发布版本的CHANGELOG.md。
     安装：
 
-    ```
+    ```bash
     yarn add conventional-changelog-cli
     ```
 
     添加脚本到package.json
 
-    ```
+    ```json
     "changelog": "npx conventional-changelog -p angular -i CHANGELOG.md -s -r 10",
     ```
     
-    conventional-changelog有很多可调整的参数，具体参考[文档](https://www.npmjs.com/package/conventional-changelog-cli)即可。
+    conventional-changelog有很多可调整的参数，具体参考文档🔗 (https://www.npmjs.com/package/conventional-changelog-cli)即可。
 
   * 关于版本号的讲解，一般格式为1.2.3，分为三段，为主版本号，次版本号，修正版本号。
 
@@ -372,13 +404,12 @@ yarn init -y
     * 运行changelog命令，生成本次发布CHANGELOG.md日志。
     在package.json文件中添加
 
-    ```
+    ```json
     "changelog": "npx conventional-changelog -p angular -i CHANGELOG.md -s -r 10"
     ```
 
-    然后运行
-
-    ```
+    执行
+    ```bash
     yarn changelog
     ```
 
@@ -401,22 +432,22 @@ yarn init -y
 
   * 按照[安装教程](https://github.com/nvie/gitflow/wiki/Installation)安装完毕后，即可在命令行中使用`git flow`相关命令
 
-  ```
-  init      Initialize a new git repo with support for the branching model.
-  feature   Manage your feature branches.
-  bugfix    Manage your bugfix branches.
-  release   Manage your release branches.
-  hotfix    Manage your hotfix branches.
-  support   Manage your support branches.
-  version   Shows version information.
-  config    Manage your git-flow configuration.
-  log       Show log deviating from base branch.
-  ```
+  >>
+    init      Initialize a new git repo with support for the branching model.
+    feature   Manage your feature branches.
+    bugfix    Manage your bugfix branches.
+    release   Manage your release branches.
+    hotfix    Manage your hotfix branches.
+    support   Manage your support branches.
+    version   Shows version information.
+    config    Manage your git-flow configuration.
+    log       Show log deviating from base branch.
     
   * 💡:
     1 在mac或*nix系统中有bash_completion支持。
     2 总是手动输入git flow很不方便，可以做个别名。
       在~/.bashrc中添加
+
       ```bash
       alias gf='git flow'
       ```
@@ -433,20 +464,20 @@ yarn init -y
 
   * 💡: 经常我们已经对文件进行了更改，才发现并没有切换新分支，此时可以使用暂存命令。
 
-  ```
+  ```bash
   git stash
   ```
 
   将未保存的修改暂存，之后再执行git flow相关命令，待切换到新分支后，执行
 
-  ```
+  ```bash
   git stash pop
   ```
   将修改暂存恢复即可
 
   * 💡: 一个功能模块的提交中有很多次无意义的提交，可以合并为一次提交，使用reset。
   
-  ```
+  ```bash
   git reset HEAD~3
   git add .
   git commit
@@ -459,7 +490,6 @@ yarn init -y
   🍻总结: 鼓励经常`commit`，确保一个`feature`或`bugfix`完成之后再push到服务器。
 
   * `git flow bugfix`与`feature`使用完全相同。
-
 
   * `git flow release`
     运行`git flow release start 1.0.0`，进入发布1.0.0版本状态，gitflow会自动创建`release/1.0.0`分支，并切换到该分支。
@@ -474,24 +504,29 @@ yarn init -y
 		support的创建会针对某个主版本的tag分支来创建使用。
 		一旦建立support分支，则该support分支不再使用git flow流程来管理。
 
-  * 💡: `flow`之间切换时输入的文字是`merge`而不是`commit`信息，不会经过`commitlint`检查。
+  * 💡: `flow`之间切换时输入的文字是`merge`而不是`commit`信息，所以不会调用`pre-commit`的`hook`被`commitlint`检查。
 
 	* gitflow工具的引入，为项目带来了提交规范的管理的切实可行性，使项目的开发日志更加清晰，并将一些流程带来的分支切换自动化，避免了一些人工管理可能导致的手工错误或遗忘问题。
 
   * 完整的功能或修正提交，是cherry-pick或版本回滚等基于git的工作流推广的基础。
 
   * `git push`默认并不提交tag，可添加配置，使`git push`默认提交tag，需git2.4以上版本。
-  ```
+
+  ```bash
   git config --global push.followTags true
   ```
-  参考https://stackoverflow.com/questions/5195859/how-to-push-a-tag-to-a-remote-repository-using-git
+
+  参考🔗 (https://stackoverflow.com/questions/5195859/how-to-push-a-tag-to-a-remote-repository-using-git)
 
   💡 可以在自己的用户目录中定义很多git操作的别名简化每次命令输入，例如我使用`git ci`命令代替`git commit`。
   __IMPORTANT__：注意自己设置的别名不要覆盖已有的git子命令。
 
-  💡 类似的改良流程有github-flow与gitlab-flow，参考http://www.ruanyifeng.com/blog/2015/12/git-workflow.html
+  💡 类似的改良流程有github-flow与gitlab-flow，参考🔗(http://www.ruanyifeng.com/blog/2015/12/git-workflow.html)。
     这两个流程没有对应的命令行工具，只是概念。
+
+  💣 `gitflow`和`conventional-changelog`一起使用时，应先升级`package.json`中的`version`，生成`changelog`之后
+    再进行`gitflow`的`release`操作，否则最新的git标签与`package.json`中的`version`相同，则不会生成`changelog`。
 
   💡__没有银弹__: 以上只是一些业界最佳实践介绍，在结合git的各种开发流程中，只有经过实践才能总结出适合自己团队的工作流。
 
-  📖: 系统学习推荐[Pro Git 2](https://legacy.gitbook.com/book/bingohuang/progit2/details)
+  📖: 系统学习推荐[Pro Git 2](https://legacy.gitbook.com/book/bingohuang/progit2/details)。
