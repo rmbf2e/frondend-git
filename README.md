@@ -110,7 +110,7 @@ yarn init -y
   安装:
 
   ```bash
-  yarn add eslint-config-prettier
+  yarn add eslint-config-prettier eslint-plugin-prettier
   ```
 
   安装之后，添加`prettier`规则到eslint配置文件。
@@ -118,9 +118,13 @@ yarn init -y
   ```javascript
   module.exports = {
     extends: [
-      'prettier',
       'airbnb',
+      'prettier',  // 💡Make sure to put it last, so it gets the chance to override other configs，[eslint-config-prettier](https://github.com/prettier/eslint-config-prettier)文档原话。
     ],
+    plugins: ['prettier']
+    rules: {
+      'prettier/prettier': 'error'
+    }
   }
   ```
 
