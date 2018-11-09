@@ -1,0 +1,12 @@
+{
+  "name": "frondend-git",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:rmbf2e/frondend-git.git",
+  "author": "superwf <superwf@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "markdownlint": "^0.11.0",
+    "markdownlint-cli": "^0.13.0"
+  }
+}

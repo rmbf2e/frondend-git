@@ -1,9 +1,10 @@
-## 以git为核心的工作流
+# 以git为核心的工作流
 
-### 前言: 
+## 前言
+
   本次分享中，我将通过介绍一些前端工程体系中的工具，通过示例代码，讲解前端项目工程化与系统化的一些经验。
 
-### 准备: 前端环境
+## 准备: 前端环境
 
   常见环境部署方法，基本都是在nodejs官网下载exe，msi文件双击安装后直接可用。
   nodejs是一门更新很快的语言，我们常常要维护老项目，老项目依赖某个较早的nodejs版本，随便升级会生成莫名其妙的错误。
@@ -49,6 +50,7 @@ node -v // v9.8.0
 
 下面将建立一个npm项目，用实际流程展示如何使用前端工具。
 创建目录并执行，初始化项目
+
 ```bash
 yarn init -y
 ```
@@ -56,12 +58,13 @@ yarn init -y
 💡: 在本示例项目中，全使用`yarn add ***`添加package简化操作，在实际项目中应根据第三方包的实际用途添加`-D`选项将包放到`devDependencies`中。
 💡: 在本示例中，统一使用`yarn`代替`npm`，具体实际操作中使用哪一个都可以，但不要混用，因为这两者生成的`node_modules`目录中的结构不同。
 
-### 第一部分: 前端代码检查自动化
+## 第一部分: 前端代码检查自动化
 
 很多人都知道`eslint`可以检查`javascript`代码，但知道`eslint`可以自动修正代码，以及如何在工程中使用的人不多。
 
 * 🛠 工具[eslint](https://www.npmjs.com/package/eslint)
   安装
+
   ```bash
   yarn add eslint
   ```
@@ -73,9 +76,11 @@ yarn init -y
   ```bash
   yarn add eslint-config-airbnb eslint-plugin-jsx-a11y eslint-plugin-react eslint-plugin-import
   ```
+
   `eslit-config-airbnb`是主体规则，其他几个是被`airbnb`规则依赖的附属规则。
 
   新增文件`.eslintrc.js`
+
   ```javascript
   module.exports = {
     extends: [
@@ -86,6 +91,7 @@ yarn init -y
 
   此时在命令行应该可以执行`eslint`命令对文件进行检查了。
   执行
+
   ```javascript
   npx eslint myjsfile.js
   ```
@@ -93,7 +99,7 @@ yarn init -y
   💡: eslint文档中的示例使用json格式的配置文件，此处使用`commonjs`规范的js模块文件。在之后的各种工具的配置文件格式，我推荐只要可以，就使用js模块，因为js模块格式可以注释，且能包含逻辑。
 
   此处使用vscode作为例子讲解与ide的结合。
-  可参考随便搜的一些配置文章，例如🔗(https://segmentfault.com/a/1190000009077086)
+  可参考随便搜的一些配置文章，例如🔗[vscode eslint](https://segmentfault.com/a/1190000009077086)
   步骤：
     1. 在vscode中添加eslint插件。
     2. 在vscode的设置中开启`Auto Fix On Save`。
@@ -120,7 +126,9 @@ yarn init -y
   module.exports = {
     extends: [
       'airbnb',
-      'prettier',  // 💡Make sure to put it last, so it gets the chance to override other configs，[eslint-config-prettier](https://github.com/prettier/eslint-config-prettier)文档原话。
+      'prettier',  // 💡Make sure to put it last, so it gets
+                   // the chance to override other configs,
+                   // [eslint-config-prettier](https://github.com/prettier/eslint-config-prettier)文档原话。
     ],
     plugins: ['prettier']
     rules: {
@@ -152,7 +160,7 @@ yarn init -y
 
   🎯同理，样式类检查有[stylelint](https://www.npmjs.com/package/stylelint)，可以检查css与各种`less/sass`等`css`增强类型文件。
 
-### 第二部分: 前端工程对接口的处理
+## 第二部分: 前端工程对接口的处理
 
   首先需要问一下，在座的有没有后端开发人员👷？
   前端人员大多是被动接受后端人员设计的接口规则，或者是因为我们认为这个就是后端人员的本职工作，或者是我们在接口设计上了解不多。
@@ -190,8 +198,11 @@ yarn init -y
   }
   // 在处理每个需要处理分页的数据的时候，还需要挨个映射分页数据。
   // 例如在组件中，使用antd的Table组件需求的数据格式。
-  <Table pagination={{current: data.pageNo, total: data.entityCount}} dataSource={data.entities} />
+  <Table
+    pagination={{current: data.pageNo, total: data.entityCount}}
+    dataSource={data.entities} />
   ```
+
   大量重复代码，多余的无用属性，命名混乱等问题😓，而且如果接口有变化，需要改很多地方。
 
   庆幸的是，大多数项目在该项目范围内，接口规则还可以做到统一。
@@ -278,7 +289,6 @@ yarn init -y
 
   // 在store中请求分页数据结构后可直接将数据赋值，不必在每个业务逻辑的store中单独处理
 
-  ```javascript
   {
   ...
     list () {
@@ -296,247 +306,263 @@ yarn init -y
   在之后的层中直接拿到工整的数据结构。
   在后端系统的开发中，也会遇到需要使用的外部接口，数据库设计混乱的情况，也可参考这种思路处理，尽量做到“混乱，在我手中终结”。
 
-### 第三部分: 启用严格检查的提交格式
+## 第三部分: 启用严格检查的提交格式
 
-  * 通用提交格式规定如下
-  
-  ```
-    type(scope): subject
-    // 空行
-    body
-    // 空行
-    footer
-  ```
+* 例如，官网用的框架[Nerv](https://github.com/NervJS/nerv)
 
-  scope, body和footer可选，type和subject必填。
-
-  * 针对 type，业界通用的选项如下
-  >>
-    feat: 特性
-    build: 构建相关的修改
-    ci: 持续集成相关的修改
-    fix: bug修正
-    docs: 文档
-    style: 样式修改
-    perf: 性能优化
-    refactor: 和特性修正无关的重构，例如重命名
-    test: 测试
-    revert: 由于上面的某个错误提交，生成恢复代码的一次提交
-    chore: 不包含在上面选项中的其他情况
-
-    🔗参考(http://www.ruanyifeng.com/blog/2016/01/commit_message_change_log.html)
-
-    💡 不同的lint规则，可选的type可能稍有不同，比如较严格的规则不允许chore这种范围太宽泛的选项。
-
-  * 安装工具之前需要初始化nodejs项目环境，运行：
+* 通用提交格式规定如下
 
   ```bash
-  yarn init
-  ```
-  
-  * 🛠工具[commintlint](https://www.npmjs.com/package/commitlint) 检测每次提交的格式核心代码。
-  * 🛠工具[commintlint-cli](https://www.npmjs.com/package/@commitlint/prompt-cli) commintlint的命令行工具。
-
-  按照文档，安装工具：
-
-  ```bash
-  yarn add commitlint @commitlint/prompt-cli
-  ```
-  
-  * 规则集[@commintlint/config-conventional](https://www.npmjs.com/package/@commitlint/config-conventional) 检测每次提交的格式。
-    该规则较宽松，angular的相对严格，取消了chore选项。
-  * 配置文件`commintlint.config.js`，放到项目根目录
-
-  ```javascript
-  module.exports = { extends: ['@commitlint/config-conventional'] }
+  type(scope): subject
+  // 空行
+  body
+  // 空行
+  footer
   ```
 
-  * 🛠 工具husky/[yorkie](https://www.npmjs.com/package/yorkie)，将`commitlint`绑定到`git`的`commit-msg`提交钩子上，在每次生成提交前调用`commitlint`检测提交文字格式，不通过验证则无法生成提交。
-  此处我使用`yorkie`作为例子
-  安装：
+scope, body和footer可选，type和subject必填。
 
-  ```bash
-  yarn add yorkie
-  ```
+* 针对 type，业界通用的选项如下
 
-    在package.json文件中添加提交消息验证
+>>
+  feat: 特性
+  build: 构建相关的修改
+  ci: 持续集成相关的修改
+  fix: bug修正
+  docs: 文档
+  style: 样式修改
+  perf: 性能优化
+  refactor: 和特性修正无关的重构，例如重命名
+  test: 测试
+  revert: 由于上面的某个错误提交，生成恢复代码的一次提交
+  chore: 不包含在上面选项中的其他情况
 
-  ```javascript
-  "gitHooks": {
-    "commit-msg": "npx commitlint -E GIT_PARAMS"
-  }
-  ```
+  🔗参考[commit message change log](http://www.ruanyifeng.com/blog/2016/01/commit_message_change_log.html)
+
+  💡 不同的lint规则，可选的type可能稍有不同，比如较严格的规则不允许chore这种范围太宽泛的选项。
+
+* 安装工具之前需要初始化nodejs项目环境，运行：
+
+```bash
+yarn init
+```
+
+* 🛠工具[commintlint](https://www.npmjs.com/package/commitlint) 检测每次提交的格式核心代码。
+* 🛠工具[commintlint-cli](https://www.npmjs.com/package/@commitlint/prompt-cli) commintlint的命令行工具。
+
+按照文档，安装工具：
+
+```bash
+yarn add commitlint @commitlint/prompt-cli
+```
+
+* 规则集[@commintlint/config-conventional](https://www.npmjs.com/package/@commitlint/config-conventional)检测每次提交的格式。
+
+该规则较宽松，angular的相对严格，取消了chore选项。
+
+* 配置文件`commintlint.config.js`，放到项目根目录
+
+```javascript
+module.exports = { extends: ['@commitlint/config-conventional'] }
+```
+
+* 🛠 工具husky/[yorkie](https://www.npmjs.com/package/yorkie)，将`commitlint`绑定到`git`的`commit-msg`提交钩子上，在每次生成提交前调用`commitlint`检测提交文字格式，不通过验证则无法生成提交。
+
+此处我使用`yorkie`作为例子
+安装：
+
+```bash
+yarn add yorkie
+```
+
+  在package.json文件中添加提交消息验证
+
+```javascript
+"gitHooks": {
+  "commit-msg": "npx commitlint -E GIT_PARAMS"
+}
+```
 
     1. git hooks分为服务器hook和本地hook，此处讲的全部都是本地hook。
     2. 详细的hooks说明需要看官方文档，想不起来的时候，可以快速看一下当前项目里的`.git/hooks`文件夹，里面的文件就是当前本地git支持的hook，这些文件都是见名知意的。
     3. 用相同的思路，还可以在其他的git hooks中注入回调命令，例如pre-commit/pre-push自动运行测试，不通过则阻止提交/推送。
 
-  * 工具[commitizen](https://www.npmjs.com/package/commitizen) 一个命令行下，用交互的方式生成合规的提交格式的工具，对于还不熟悉提交消息格式的人起到自动生成合规消息的作用，可有可无。
-  安装过程
+* 工具[commitizen](https://www.npmjs.com/package/commitizen) 一个命令行下，用交互的方式生成合规的提交格式的工具，对于还不熟悉提交消息格式的人起到自动生成合规消息的作用，可有可无。
 
-  ```
-  yarn add commitizen
-  yarn add cz-conventional-changelog
-  echo '{ "path": "cz-conventional-changelog" }' > .czrc
-  ```
+安装过程
 
-  安装完毕之后，即可使用`git-cz`命令代替`git commit`提交。
+```bash
+yarn add commitizen
+yarn add cz-conventional-changelog
+echo '{ "path": "cz-conventional-changelog" }' > .czrc
+```
 
-  * 经过了上面对提交文字的规范，即可达到自动生成changelog的目的。
+安装完毕之后，即可使用`git-cz`命令代替`git commit`提交。
 
-  * 工具[conventional-changelog-cli](https://www.npmjs.com/package/conventional-changelog-cli)，自动提取提交记录，根据当前package.json中的version版本号，生成当前发布版本的CHANGELOG.md。
-    安装：
+* 经过了上面对提交文字的规范，即可达到自动生成changelog的目的。
 
-    ```bash
-    yarn add conventional-changelog-cli
-    ```
+* 工具[conventional-changelog-cli](https://www.npmjs.com/package/conventional-changelog-cli)，自动提取提交记录，根据当前package.json中的version版本号，生成当前发布版本的CHANGELOG.md。
 
-    添加脚本到package.json
+安装：
 
-    ```json
-    "changelog": "npx conventional-changelog -p angular -i CHANGELOG.md -s -r 10",
-    ```
-    
-    conventional-changelog有很多可调整的参数，具体参考文档🔗 (https://www.npmjs.com/package/conventional-changelog-cli)即可。
+```bash
+yarn add conventional-changelog-cli
+```
 
-  * 关于版本号的讲解，一般格式为1.2.3，分为三段，为主版本号，次版本号，修正版本号。
+添加脚本到package.json
 
-  >>
-    主版本号  当前程序经过重构，生成了与之前版本不兼容的api，则主版本号升级。
-    次版本号  每次新feature的添加，即升级次版本号。
-    修正版本号 每次bug修正引起的升级，即升级修正版本号。
-    在首个稳定版本发布之前，会有试用版标识，例如：`2.0.0-beta.1`，`2.0.0-beta.2`等，从beta进化到正式版的第一个版本应为`2.0.0`。
+```json
+"changelog": "npx conventional-changelog -p angular -i CHANGELOG.md -s -r 10",
+```
 
-  💡 每次发布，需要变更版本号，才需要生成changelog，而不是经常随时生成。
-  💡 每次发布前需要做两件事。
-    1. 根据实际情况，升级`package.json`中的版本号。
-    2. 运行`changelog`命令，生成本次发布`CHANGELOG.md`日志。
-  🔗参考[语义化版本](https://semver.org/lang/zh-CN/)
+conventional-changelog有很多可调整的参数，具体参考文档🔗 [conventional-changelog-cli](https://www.npmjs.com/package/conventional-changelog-cli)即可。
 
-    在`package.json`文件中添加运行脚本
-    ```json
-    "changelog": "npx conventional-changelog -p angular -i CHANGELOG.md -s -r 10"
-    ```
+* 关于版本号的讲解，一般格式为1.2.3，分为三段，为主版本号，次版本号，修正版本号。
 
-    执行
-    ```bash
-    yarn changelog
-    ```
+>>
+  主版本号  当前程序经过重构，生成了与之前版本不兼容的api，则主版本号升级。
+  次版本号  每次新feature的添加，即升级次版本号。
+  修正版本号 每次bug修正引起的升级，即升级修正版本号。
+  在首个稳定版本发布之前，会有试用版标识，例如：`2.0.0-beta.1`，`2.0.0-beta.2`等，从beta进化到正式版的第一个版本应为`2.0.0`。
 
-### 第四部分: 介绍gitflow流程
+💡 每次发布，需要变更版本号，才需要生成changelog，而不是经常随时生成。
+💡 每次发布前需要做两件事。
 
-  * git flow重要概念
+1. 根据实际情况，升级`package.json`中的版本号。
 
-  >>
-		只有两个长期分支master与develop，其他都是临时分支，随需求增加，随开发完成而删除。
-		feature/bugfix从develop分出
-		feature/bugfix完成后会自动合并到develop
-		release从develop分出
-		release完成后会自动合并到develop和master
-		hotfix从master分出
-		hotfix完成后会自动合并到develop和master
+2. 运行`changelog`命令，生成本次发布`CHANGELOG.md`日志。
 
-  可结合示例图理解流程，看不懂要多看两遍，并且相信自己一定能看懂🙏。
-  ![flow](https://raw.githubusercontent.com/rmbf2e/frondend-git/master/git-model%402x.png)
-  图片来自gitflow的推荐教程文档[https://nvie.com/posts/a-successful-git-branching-model/]
+🔗参考[语义化版本](https://semver.org/lang/zh-CN/)
 
-  * 按照[安装教程](https://github.com/nvie/gitflow/wiki/Installation)安装完毕后，即可在命令行中使用`git flow`相关命令
+在`package.json`文件中添加运行脚本
 
-  >>
-    init      Initialize a new git repo with support for the branching model.
-    feature   Manage your feature branches.
-    bugfix    Manage your bugfix branches.
-    release   Manage your release branches.
-    hotfix    Manage your hotfix branches.
-    support   Manage your support branches.
-    version   Shows version information.
-    config    Manage your git-flow configuration.
-    log       Show log deviating from base branch.
-    
-  💡:
-    1 在mac或*nix系统中有bash_completion支持。
-    2 总是手动输入git flow很不方便，可以做个别名。
-      在~/.bashrc中添加
+```json
+"changelog": "npx conventional-changelog -p angular -i CHANGELOG.md -s -r 10"
+```
 
-      ```bash
-      alias gf='git flow'
-      ```
-      之后用`gf`命令代替`git flow`
+执行
 
+```bash
+yarn changelog
+```
 
-	* 首先在一个git项目中执行git flow init，会在命令行交互询问各个分支的命名，可以添加-d参数全部使用默认值。
-		init完成后，会自动停留在develop分支。
+## 第四部分: 介绍gitflow流程
 
-	* 添加一个新特性，例如验证用户年龄，`git flow feature start validateUserAge`。
-	gitflow会自动添加分支`feature/validateUserAge`，并切换到该分支。
-	开发完成后执行`git flow feature finish validateUserAge`。
-	gitflow会自动将该分支合并到develop，并删除该分支，表明该特性开发完成。
+* git flow重要概念
 
-  * 💡: 经常我们已经对文件进行了更改，才发现并没有切换新分支，此时可以使用暂存命令。
+>>
+  只有两个长期分支master与develop，其他都是临时分支，随需求增加，随开发完成而删除。
+  feature/bugfix从develop分出
+  feature/bugfix完成后会自动合并到develop
+  release从develop分出
+  release完成后会自动合并到develop和master
+  hotfix从master分出
+  hotfix完成后会自动合并到develop和master
 
-  ```bash
-  git stash
-  ```
+可结合示例图理解流程，看不懂要多看两遍，并且相信自己一定能看懂🙏。
+![flow](https://raw.githubusercontent.com/rmbf2e/frondend-git/master/git-model%402x.png)
+图片来自gitflow的推荐[教程文档](https://nvie.com/posts/a-successful-git-branching-model/)
 
-  将未保存的修改暂存，之后再执行git flow相关命令，待切换到新分支后，执行
+按照[安装教程](https://github.com/nvie/gitflow/wiki/Installation)安装完毕后，即可在命令行中使用`git flow`相关命令。
 
-  ```bash
-  git stash pop
-  ```
-  将修改暂存恢复即可
-
-  * 💡: 一个功能模块的提交中有很多次无意义的提交，可以合并为一次提交，使用reset。
+>>
+  init      Initialize a new git repo with support for the branching model.
+  feature   Manage your feature branches.
+  bugfix    Manage your bugfix branches.
+  release   Manage your release branches.
+  hotfix    Manage your hotfix branches.
+  support   Manage your support branches.
+  version   Shows version information.
+  config    Manage your git-flow configuration.
+  log       Show log deviating from base branch.
   
-  ```bash
-  git reset HEAD~3
-  git add .
-  git commit
-  ```
-  撤销前三次操作，重新生成一次提交
-  🈲：该操作只能在没有`git push`到服务器之前进行，如果已经`push`了，那就保持这个提交记录，千万不要用`--force`，会可能覆盖其他人的工作。除非你可以确保`push`的分支是私有分支，别人肯定不会`pull`，才可以在使用`--force`参数。
 
-	![shoot](https://raw.githubusercontent.com/rmbf2e/frondend-git/master/push2shoot.png)
+💡 在mac或*nix系统中有bash_completion支持。,
+💡 总是手动输入git flow很不方便，可以做个别名。
+在~/.bashrc中添加
 
-  🍻总结: 鼓励经常`commit`，确保一个`feature`或`bugfix`完成之后再push到服务器。
+```bash
+alias gf='git flow'
+```
 
-  * `git flow bugfix`与`feature`使用完全相同。
+之后用`gf`命令代替`git flow`
 
-  * `git flow release`
-    运行`git flow release start 1.0.0`，进入发布1.0.0版本状态，gitflow会自动创建`release/1.0.0`分支，并切换到该分支。
-    运行`git flow release finish 1.0.0`，自动将1.0.0添加到git的tag，添加一个版本标签，并自动将release/1.0.0分支合并到master与develop分支，
-	  完成后自动删除release/1.0.0分支，并自动切换回develop分支。
+* 首先在一个git项目中执行git flow init，会在命令行交互询问各个分支的命名，可以添加-d参数全部使用默认值。
+  init完成后，会自动停留在develop分支。
 
-    其他更多命令与流程理解，可参阅gitflow文档。
-    https://nvie.com/posts/a-successful-git-branching-model/
-    https://github.com/petervanderdoes/gitflow-avh
+* 添加一个新特性，例如验证用户年龄，`git flow feature start validateUserAge`。
 
-	* git flow support 在同时维护多个发行版本时使用，例如当前最新版本已经升级为2.x.x，但1.x.x版本仍然需要维护的情况。
-		support的创建会针对某个主版本的tag分支来创建使用。
-		一旦建立support分支，则该support分支不再使用git flow流程来管理。
+gitflow会自动添加分支`feature/validateUserAge`，并切换到该分支。
+开发完成后执行`git flow feature finish validateUserAge`。
+gitflow会自动将该分支合并到develop，并删除该分支，表明该特性开发完成。
 
-  * 💡: `flow`之间切换时输入的文字是`merge`而不是`commit`信息，所以不会调用`pre-commit`的`hook`被`commitlint`检查。
+* 💡: 经常我们已经对文件进行了更改，才发现并没有切换新分支，此时可以使用暂存命令。
 
-	* gitflow工具的引入，为项目带来了提交规范的管理的切实可行性，使项目的开发日志更加清晰，并将一些流程带来的分支切换自动化，避免了一些人工管理可能导致的手工错误或遗忘问题。
+```bash
+git stash
+```
 
-  * 完整的功能或修正提交，是cherry-pick或版本回滚等基于git的工作流推广的基础。
+将未保存的修改暂存，之后再执行git flow相关命令，待切换到新分支后，执行
 
-  * `git push`默认并不提交tag，可添加配置，使`git push`默认提交tag，需git2.4以上版本。
+```bash
+git stash pop
+```
 
-  ```bash
-  git config --global push.followTags true
-  ```
+将修改暂存恢复即可
 
-  🔗参考 (https://stackoverflow.com/questions/5195859/how-to-push-a-tag-to-a-remote-repository-using-git)
+* 💡: 一个功能模块的提交中有很多次无意义的提交，可以合并为一次提交，使用reset。
 
-  💡 可以在自己的用户目录中定义很多git操作的别名简化每次命令输入，例如我使用`git ci`命令代替`git commit`。
-  __IMPORTANT__：注意自己设置的别名不要覆盖已有的git子命令。
+```bash
+git reset HEAD~3
+git add .
+git commit
+```
 
-  💡 类似的改良流程有github-flow与gitlab-flow，🔗参考(http://www.ruanyifeng.com/blog/2015/12/git-workflow.html)。
-    这两个流程没有对应的命令行工具，只是概念。
+撤销前三次操作，重新生成一次提交
+🈲：该操作只能在没有`git push`到服务器之前进行，如果已经`push`了，那就保持这个提交记录，千万不要用`--force`，会可能覆盖其他人的工作。除非你可以确保`push`的分支是私有分支，别人肯定不会`pull`，才可以在使用`--force`参数。
 
-  💣 `gitflow`和`conventional-changelog`一起使用时，应先升级`package.json`中的`version`，生成`changelog`之后
-    再进行`gitflow`的`release`操作，否则最新的git标签与`package.json`中的`version`相同，则不会生成`changelog`。
+![shoot](https://raw.githubusercontent.com/rmbf2e/frondend-git/master/push2shoot.png)
 
-  💡__没有银弹__: 以上只是一些业界最佳实践介绍，在结合git的各种开发流程中，只有经过实践才能总结出适合自己团队的工作流。
+🍻总结: 鼓励经常`commit`，确保一个`feature`或`bugfix`完成之后再push到服务器。
 
-  📖: 系统学习推荐[Pro Git 2](https://legacy.gitbook.com/book/bingohuang/progit2/details)。
+* `git flow bugfix`与`feature`使用完全相同。
+
+* `git flow release`
+  运行`git flow release start 1.0.0`，进入发布1.0.0版本状态，gitflow会自动创建`release/1.0.0`分支，并切换到该分支。
+  运行`git flow release finish 1.0.0`，自动将1.0.0添加到git的tag，添加一个版本标签，并自动将release/1.0.0分支合并到master与develop分支，
+  完成后自动删除release/1.0.0分支，并自动切换回develop分支。
+
+  其他更多命令与流程理解，可参阅gitflow文档。
+  [a-successful-git-branching-model](https://nvie.com/posts/a-successful-git-branching-model/)
+  [gitflow-avh](https://github.com/petervanderdoes/gitflow-avh)
+
+* git flow support 在同时维护多个发行版本时使用，例如当前最新版本已经升级为2.x.x，但1.x.x版本仍然需要维护的情况。
+  support的创建会针对某个主版本的tag分支来创建使用。
+  一旦建立support分支，则该support分支不再使用git flow流程来管理。
+
+* 💡: `flow`之间切换时输入的文字是`merge`而不是`commit`信息，所以不会调用`pre-commit`的`hook`被`commitlint`检查。
+
+* gitflow工具的引入，为项目带来了提交规范的管理的切实可行性，使项目的开发日志更加清晰，并将一些流程带来的分支切换自动化，避免了一些人工管理可能导致的手工错误或遗忘问题。
+
+* 完整的功能或修正提交，是cherry-pick或版本回滚等基于git的工作流推广的基础。
+
+* `git push`默认并不提交tag，可添加配置，使`git push`默认提交tag，需git2.4以上版本。
+
+```bash
+git config --global push.followTags true
+```
+
+🔗参考 [how-to-push-a-tag-to-a-remote-repository-using-git](https://stackoverflow.com/questions/5195859/how-to-push-a-tag-to-a-remote-repository-using-git)
+
+💡 可以在自己的用户目录中定义很多git操作的别名简化每次命令输入，例如我使用`git ci`命令代替`git commit`。
+__IMPORTANT__：注意自己设置的别名不要覆盖已有的git子命令。
+
+💡 类似的改良流程有github-flow与gitlab-flow，🔗参考[git-workflow](http://www.ruanyifeng.com/blog/2015/12/git-workflow.html)。
+  这两个流程没有对应的命令行工具，只是概念。
+
+💣 `gitflow`和`conventional-changelog`一起使用时，应先升级`package.json`中的`version`，生成`changelog`之后
+  再进行`gitflow`的`release`操作，否则最新的git标签与`package.json`中的`version`相同，则不会生成`changelog`。
+
+💡__没有银弹__: 以上只是一些业界最佳实践介绍，在结合git的各种开发流程中，只有经过实践才能总结出适合自己团队的工作流。
+
+📖: 系统学习推荐[Pro Git 2](https://legacy.gitbook.com/book/bingohuang/progit2/details)。
